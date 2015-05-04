@@ -44,10 +44,7 @@
 	
 	
 	/* Utility Function */
-	
-	/* for PHP < 4.3 -------------------------------------------- */
-    if (!function_exists("stripos")) 
-    {
+    if (!function_exists("stripos")) {
         function stripos($str, $needle, $offset=0)
        {
            return strpos(strtolower($str), strtolower($needle), $offset);
@@ -80,12 +77,6 @@
 		}
     }
     
-    function str_contains($str, $val)
-    {
-    	return (strpos($str, $val) !== false);
-    }
-    
-	/* String Management -------------------------------------------- */
     function IsStrEmpty($Src)
     {
     	return strlen( trim($Src) ) <= 0;
@@ -101,28 +92,17 @@
     	return ( strpos($Src, $Needle) !== false );
     }
     
+    function StrContains($Src, $Needle)
+    {
+    	return ( strpos($Src, $Needle) !== false );
+    }
+    
     /*  GetStrCombineParams - Combine Parameter  
      * 
      *  Format Example:    $PrefV $Value $SuffV $Spr ...
      * 						(aaaa),(bbbb),(ccccc) 
      * 
      */
-    
-    function IsStrFilePath($Src)
-    {
-    	if (strpos("/") === 0)
-    		return true;
-    		
-    	return false;    	
-    }
-    
-    function IsStrFileName($Src)
-    {
-    	if (strpos($Src, "/") === false)
-    		return true;
-    		
-    	return false;    	
-    }
     
 	function GetStrCombineParams($Params, $PrefV, $SuffV, $Spr, $StIndex = 0, $Inc = 1, $Max = 0)
 	{
@@ -142,8 +122,7 @@
 		return $Res;
 	}
 	
-	/*  --------------------------------------------------------------------------- 
-	 *  GetStrCombineKVParams - Combine Key-Value Pair Parameter
+	/*  GetStrCombineKVParams - Combine Key-Value Pair Parameter
 	 * 
 	 *  Format Example:      $PrefK $Key $SuffK $Mid $PrefV $Value $SuffV $Spr ...
      * 						[keyaaa]=(valueaaa), [keybbb]=(valuebbb), [keyccc]=(valueccc) 
@@ -170,8 +149,7 @@
 		return $Res;
 	}
 	
-	/*  ---------------------------------------------------------------------------
-	 * 	GetStrCombineParamsArgs - Combine Parameter by Function Arguments
+	/*  GetStrCombineParamsArgs - Combine Parameter by Function Arguments
 	 * 
 	 *  Format Example:      $PrefK $Key $SuffK $Mid $PrefV $Value $SuffV $Spr ...
      * 						aaaa , bbb , cccc 
@@ -196,12 +174,6 @@
 		}
 		return  $Res;
 	}
-	
-	/*  ---------------------------------------------------------------------------
-	 * 	GetStrBefore - Before Token
-	 *   
-	 * 	 				
-	 */
 	
 	function GetStrBefore($Src, $Before, $Inc = false, $CaseSen = false)
     {
@@ -397,7 +369,8 @@
 	{
 		$SpPos = strrpos( $V , "/");
 		if ($SpPos !== false)
-			return substr( $V, $SpPos + 1 );
+		return substr( $V, $SpPos + 1 );
+		else
 		return $V;
 	}
 
@@ -405,7 +378,8 @@
 	{
 		$SpPos = strrpos( $V , "/");
 		if ($SpPos !== false)
-			return substr( $V, 0, $SpPos );
+		return substr( $V, 0, $SpPos );
+		else
 		return "";
 	}
 	
@@ -450,92 +424,38 @@
 
 	function tis2utf8($tis) 
 	{
-			for( $i=0 ; $i< strlen($tis) ; $i++ )
-			{
-	      $s = substr($tis, $i, 1);
-	      $val = ord($s);
-	      if( $val < 0x80 ){
-	         $utf8 .= $s;
-	      } elseif ( ( 0xA1 <= $val and $val <= 0xDA ) or ( 0xDF <= $val and $val <= 0xFB ) ){
-	         $unicode = 0x0E00 + $val - 0xA0;
-	         $utf8 .= chr( 0xE0 | ($unicode >> 12) );
-	         $utf8 .= chr( 0x80 | (($unicode >> 6) & 0x3F) );
-	         $utf8 .= chr( 0x80 | ($unicode & 0x3F) );
-	      }
-			}
-		return $utf8;
+		for( $i=0 ; $i< strlen($tis) ; $i++ )
+		{
+      $s = substr($tis, $i, 1);
+      $val = ord($s);
+      if( $val < 0x80 ){
+         $utf8 .= $s;
+      } elseif ( ( 0xA1 <= $val and $val <= 0xDA ) or ( 0xDF <= $val and $val <= 0xFB ) ){
+         $unicode = 0x0E00 + $val - 0xA0;
+         $utf8 .= chr( 0xE0 | ($unicode >> 12) );
+         $utf8 .= chr( 0x80 | (($unicode >> 6) & 0x3F) );
+         $utf8 .= chr( 0x80 | ($unicode & 0x3F) );
+      }
+		}
+	return $utf8;
 	}
 	
 	function utf8_to_tis620($string) 
 	{
-		  $str = $string;
-		  $res = "";
-		  for ($i = 0; $i < strlen($str); $i++) {
-		    if (ord($str[$i]) == 224) {
-		      $unicode = ord($str[$i+2]) & 0x3F;
-		      $unicode |= (ord($str[$i+1]) & 0x3F) << 6;
-		      $unicode |= (ord($str[$i]) & 0x0F) << 12;
-		      $res .= chr($unicode-0x0E00+0xA0);
-		      $i += 2;
-		    } else {
-		      $res .= $str[$i];
-		    }
-		  }
-		  return $res;
-	}
-	
-	
-	function DynDebug($Val)
-	{
-		if ($DynDebugOutput)
-		{
-			if (func_num_args() > 1)
-				$Data = implode(func_get_args()) . "\r\n";
-			else
-				$Data = $Val . "\r\n";
-			echo $Data;
-			file_put_contents("debug.txt", $Data, FILE_APPEND);
-		}
+  $str = $string;
+  $res = "";
+  for ($i = 0; $i < strlen($str); $i++) {
+    if (ord($str[$i]) == 224) {
+      $unicode = ord($str[$i+2]) & 0x3F;
+      $unicode |= (ord($str[$i+1]) & 0x3F) << 6;
+      $unicode |= (ord($str[$i]) & 0x0F) << 12;
+      $res .= chr($unicode-0x0E00+0xA0);
+      $i += 2;
+    } else {
+      $res .= $str[$i];
+    }
+  }
+  return $res;
 	}
 
-	
-	
-	function VarDump_String($Var, $TabLv = 0)
-	{
-		$StrTab = "";
-		for ($Cnt = 0; $Cnt < $TabLv; $Cnt++) 
-			$StrTab .= "\t";
-		
-		if (is_null($Var))
-			return null;
-		if (is_string($Var))
-		{
-			$Len = strlen($Var);
-			
-			$Var = str_replace("\r", "{CR}", $Var);
-			$Var = str_replace("\n", "{LF}", $Var);
-			$Var = str_replace("\0", "{0}", $Var);
-			return "(string[$Len]) \t \"$Var\" \r\n";
-		}
-		if (is_array($Var))
-		{
-			$Len = count($Var);
-			
-			if ($Len > 0)
-			{
-				$Res = "Array[$Len] $StrTab\r\n$StrTab{\r\n";
-				foreach($Var as $Key => $Val)
-				{
-					$Text = VarDump_String($Val, $TabLv + 1);
-					$Res .= "$StrTab\t[$Key] => $Text";				
-				}
-				return $Res . "$StrTab}\r\n\r\n";
-			}
-			$Res = "Array[$Len] \r\n";			
-		}
-						
-		$Type = gettype($Var);
-		return "($Type) $Var \r\n";
-	}
-	
 ?>
