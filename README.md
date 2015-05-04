@@ -3,21 +3,27 @@
 Welcome to DynCore PHP Framework Library 
 
 I built this library for beginner which is easy to learn about php and connecting database such as mysql
+I'm using it to my production website 
 
 # Section
 - Database Management (Support Old-school mysql functions, and PDO with new functions)
-- User Management
+- HTML Template and Generator function  
 - Logging & Performance Measuring
+- Data Filtering
 - Multi-template support
+- Form and Validation
+- Data Caching
+- User Management
+- File Storage Management
 
 
 # Goal
-- Flexible & Fast & Robust
+- Flexible
+- Fast & Robust
 - Less include files
 - Less complexity
 - work with jQuery and any popular CSS frameworks
-- Friendly with beginner
-
+- Easy to develop & Friendly with beginner
 
 
 # permissions
