@@ -315,6 +315,19 @@
                 $Res .= Html_Element('input', $Attrs);
                 break;
             
+            case 'submit':
+                $Attrs['type'] = 'submit';                
+                $Text = $Attrs['text'];
+                if ($Text == '')
+                    $Text = $Value;
+                if ($Text === null)
+                    $Text = '';
+            
+                LogWrite('debug', $Attrs);
+                $Res .= Html_Element('button', $Attrs, $Text);
+                break;
+                
+            
             case 'button':                
                 $Attrs['type'] = 'submit';
                 

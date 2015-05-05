@@ -10,8 +10,8 @@
 		public $current_db_name = '';
 		
 		public $log_enabled = true;
-		public $logs = array();
-		public $errors = array();
+        public $logs;
+        
 		public $client = null;
 		public $query;		
 		public $result_mode = 1;
@@ -28,28 +28,15 @@
 			$this->username = $name;
 			$this->password = $pass;
 			$this->db_name = $dbname;
-		}
+
+            $this->logs = GetLog();
+        }
 		
 		function Log($type, $src)
 		{
-			if (($this->log_enabled == false) && ($type != 'error'))
-				return;
-				
-			$micro = round(microtime(true) * 1000);
-			$date = date('Y-m-d H:i:s') . ($micro - $this->connected_time);
-			
-			$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-			$prefix = $date . ' ' . $type . '(' . basename( $callers[2]['file'] ) . ':' . $callers[2]['line'] . ') ';
-			
-			if ($type == 'error')
-			{
-				$msg = '->' . $callers[1]['function'] . ' ' . $src->getMessage();
-				$this->errors[] = $prefix . $msg;
-			}
-			else
-				$msg = $src;
-			
-			$this->logs[] = $prefix . $msg;
+			if ($this->log_enabled == false)
+				return;            
+            $this->logs->Write($type, $src); 
 		}
 		
 		function Connect()
@@ -69,7 +56,7 @@
 				$this->connected = true;
 				$this->connected_time = round(microtime(true) * 1000);
 				
-				$this->Log('init', 'connected to ' . $con_str);
+				$this->Log('db', 'connected to ' . $con_str);
 				
 				$this->UseDatabase($this->db_name);
 				return true;
@@ -279,20 +266,12 @@
 		
 		function ShowLogs()
 		{
-			$res = "";
-			if ( is_array( $this->logs ) )
-			foreach($this->logs as $e)
-				$res .= "$e\r\n";
-			echo $res;
+            $this->logs->ShowLogs('db');
 		}
 		
 		function ShowErrors()
-		{
-			$res = "";
-			if ( is_array( $this->errors ) )
-			foreach($this->errors as $e)
-				$res .= "$e\r\n";
-			echo $res;
+		{            
+			$this->logs->ShowLogs('dberror');
 		}
 		
 	}

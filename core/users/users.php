@@ -40,6 +40,14 @@
 				$res = $this->Data['username'];
 			return $res;
 		}
+        
+        
+        function Get($Key, $Def = null)
+        {
+            if ( isset( $this->Data[$Key]) )
+                return $this->Data[$Key];
+            return $Def;
+        }
 		
 		
 		function GetAccessToken($New = false)
@@ -178,10 +186,15 @@
 	}
 
 	function User_ByToken( $token )
-	{
+	{   global $Users;
 		$token = substr(trim($token), 0, 128);
 		if ($token == '')
 			return;
+        
+        if (is_array($Users))
+            foreach($Users as $User)
+                if ($User->Get('access_token') == $token)
+                    return $User;
 		
 	 	$UserDB = User_GetDB();
 		$res = $UserDB->SelectRow("SELECT * FROM users WHERE (access_token = @token) LIMIT 1", array( '@token' => $token ));		

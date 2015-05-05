@@ -42,7 +42,8 @@
 			{
 				$DynTemplate[$K] = $V;
 			}
-	 
+     
+        LogWrite('core', 'html_init');
 	}
 
 
@@ -119,6 +120,7 @@
 	function Html_Render($ScopeName)
 	{	global $DynTemplate, $Request, $User, $CurrentUser, $Cache, $Filters;
 	 
+        LogWrite('core', 'html_render ' . $ScopeName);
 	 	if ( isset( $DynTemplate['scope'][$ScopeName] ) )
 		{
 			echo $DynTemplate['scope'][$ScopeName];

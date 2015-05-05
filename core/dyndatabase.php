@@ -15,6 +15,7 @@
 		
 		if ($Res)
 		{
+			mysql_query("SET NAMES UTF8");
 			mysql_selectdb($Configs['DATABASE']);
 			return $Res;		
 		}
