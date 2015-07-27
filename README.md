@@ -25,9 +25,13 @@ I'm using it to my production website
 - work with jQuery and any popular CSS frameworks
 - Easy to develop & Friendly with beginner
 
+# Configuration
+
+- Using config.php file settings basic enviroment
+- Include init.php to start the framework
+
 
 # permissions
-
 
 Copyright © 2014 Kobchaipuk Kemapirom - Metropolian (metropolian@live.com)
 
