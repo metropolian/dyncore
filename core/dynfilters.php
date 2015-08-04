@@ -1,4 +1,13 @@
 <?php
+/**
+* DynFilter 
+*
+* Filtering Data Class
+*
+* @package  DynCore
+* @author   Metro Kobchaipuk <metropolian@live.com>
+* @version  $Revision: 1.0 $
+*/
 
 	require_once("dynfilters_base.php");
 	

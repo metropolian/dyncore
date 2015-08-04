@@ -1,4 +1,13 @@
 <?php
+/**
+* DynDb 
+*
+* Database Connection Class
+*
+* @package  DynCore
+* @author   Metro Kobchaipuk <metropolian@live.com>
+* @version  $Revision: 1.0 $
+*/
 
 	class DynDb
 	{

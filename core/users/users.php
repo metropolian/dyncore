@@ -17,7 +17,18 @@
 
 	class DynUser
 	{
-		
+        public $TbUser = 'users';
+        
+        public $DataKeys = array(
+            'user_id', 'username', 'password', 'access_token', 'access_token_time',
+            'user_type', 'user_title', 'user_email', 
+            'created_time', 'accessed_time', 'updated_time',
+            'user_permissions', 'user_options', 'user_status', 
+            'language', 'timezone', 
+            'first_name', 'mid_name', 'last_name',
+            'flags',
+        );
+        
 		public $Data = array();
 		
 		function __construct($Src)
@@ -26,7 +37,7 @@
 				$this->Data['user_id'] = $Src;
 			if ( is_array($Src) )
 				$this->Data = $Src;
-		}
+		}        
 		
 		function ID()
 		{
@@ -48,8 +59,12 @@
                 return $this->Data[$Key];
             return $Def;
         }
-		
-		
+        
+        function Set($Key, $Value)
+        {
+            $this->Data[$Key] = $Value;
+        }
+        
 		function GetAccessToken($New = false)
 		{	
 			if ($New)
@@ -98,25 +113,50 @@
 			return false;			
 		}
 		
-		function Update($V)
+		function Update($V = null)
 		{	
 			$Id = $this->ID();			
 			if ($Id > 0)
 			{
-				unset($V['user_id']);
-				
+                if ($V == null)
+                    $V = $this->Data;
+                
+                if (is_array($V))
+                {
+				    unset($V['user_id']);                
+                    foreach ($V as $K => $Val) 
+                        $this->Data[$K] = $Val;
+                }
+                
 				$UserDB = User_GetDB();
 				return $UserDB->Update('users', $V, " user_id = @Id", array("@Id" => $Id));
 			}
 			return false;			
-		}		
+		}
+        
+        
+        
 	}
+
+
+
+
+
+
+
+    /* general function ------------------------------------------------------------------------
+    */
 
 	function User_GetDB()
 	{	global $UserDB;
 	
 	 	if ($UserDB == null)
-			$UserDB = new DynDb(DB_TYPE, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+			$UserDB = GetDB('user');
+        if ($UserDB == null)
+        {
+            echo 'No UserDB defined.';
+            exit;
+        }
 	 	return $UserDB;	 
 	}
 

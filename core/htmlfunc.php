@@ -326,6 +326,11 @@
                 LogWrite('debug', $Attrs);
                 $Res .= Html_Element('button', $Attrs, $Text);
                 break;
+            
+            case 'image':
+                $Attrs['src'] = $Attrs['value'];
+                $Res .= Html_Element('img', $Attrs);
+                break;
                 
             
             case 'button':                

@@ -135,7 +135,11 @@
 				if (is_file($Fname_ext))
 					$Fname = $Fname_ext;
 			}
-			require( $Fname );
+            
+            if (is_file($Fname))
+			     require( $Fname ); 
+            else
+                echo "Scope missing: {$ScopeName}";
 		}
 	}
 	
