@@ -66,6 +66,13 @@
             $this->Items[] = $V;
         }
         
+        function AddControls($V)
+        {
+            if (is_array($V))
+            foreach($V as $D)
+            $this->Items[] = $D;
+        }
+        
         function AddSubmenu($Type = '')
         {            
             $V = new DynMenu('dropdown');

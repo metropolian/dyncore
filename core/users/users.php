@@ -1,7 +1,5 @@
 <?php
 
-	$func = $Request->GET('func');
-
 	$Users = array();
 	$CurrentUser = null;
 		
@@ -31,7 +29,7 @@
         
 		public $Data = array();
 		
-		function __construct($Src)
+		function __construct($Src = null)
 		{
 			if ( is_numeric($Src) )
 				$this->Data['user_id'] = $Src;
@@ -47,6 +45,8 @@
 		function Title()
 		{
 			$res = $this->Data['user_title'];
+            if ($res == '')
+                $res = trim( $this->Data['first_name'] . ' ' . $this->Data['last_name'] );
 			if ($res == '')
 				$res = $this->Data['username'];
 			return $res;
@@ -62,11 +62,31 @@
         
         function Set($Key, $Value)
         {
+            if ($Key == 'password')
+                $Value = User_EncryptPassword($Value);            
             $this->Data[$Key] = $Value;
+        }
+        
+        function Match($Values)
+        {
+            if (count($Values) > 0)
+            {
+                foreach ($this->Data as $E) 
+                {                    
+                }
+                
+                foreach ($Values as $V) 
+                {
+
+                }
+            }
         }
         
 		function GetAccessToken($New = false)
 		{	
+            if ($this->Data['access_token'] == '')
+                $New = true;
+            
 			if ($New)
 			{
 				$Username = $this->Data['username'];				
@@ -112,6 +132,29 @@
 			}
 			return false;			
 		}
+        
+        function Register()
+        {
+            if ($this->ID() <= 0)
+            {
+                $UserDB = User_GetDB();
+                
+                if ($this->Data['username'] != '') 
+                {     
+                    $Id = $UserDB->Insert('users', $this->Data);                    
+                    if ($Id > 0)
+                    {
+                        $this->Data['user_id'] = $Id;
+                        return $Id;
+                    }
+                    else
+                        return -3;
+                }
+                else
+                    return -2;
+            }            
+            return -1;
+        }
 		
 		function Update($V = null)
 		{	
@@ -186,6 +229,12 @@
 	 	return $CurrentUser;
 	}
 
+    function User_SetCurrent( $User )
+    {   global $Configs;
+        $LifeTime = (isset($Configs['user_cookie_timeout'])) ? $Configs['user_cookie_timeout'] : 86400;
+     
+        User_SetCookies( $User, $LifeTime, true );
+    }
 
 
 	function User_SetCookies( $User, $LifeTime = 86400, $SetAsCurrent = true )
@@ -287,5 +336,38 @@
 		}
 		return null;		
 	}
+
+    function User_Search( $SearchValues, $Limits = 0 )
+    {   global $Users;
+     
+        $Conds = array();
+        foreach ($SearchValues as $K => $V) 
+            $Conds[] = "($K = @{$K})";
+     
+        $P = array();
+        foreach ($SearchValues as $K => $V) 
+            $P["@{$K}"] = $V;
+     
+        $StrConds = implode(' AND ', $Conds);
+     
+        $StrLimits = '';        
+        if ($Limits > 0)
+            $StrLimits = "LIMIT {$Limits}";
+     
+	 	$UserDB = User_GetDB();
+		$res = $UserDB->Select("SELECT * FROM users WHERE {$StrConds} {$StrLimits}", $P);
+		if ( count($res) > 0 )
+		{
+            $outputs = array();
+            foreach ($res as $R) 
+            {   
+                 $User = new DynUser($R);
+			     User_SetCache($User);
+			     $outputs[] = $User;
+            }
+            return $outputs;
+		}
+		return null;     
+    }
 
 ?>

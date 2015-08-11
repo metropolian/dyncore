@@ -132,11 +132,11 @@
 	{	global $DynPageErrors;
 		if ( !is_array( $DynPageErrors ) )
 			return;
-			
-		$res = Html_Element( 'ul', $Attrs );
+        $res = Html_Element( 'div', $Attrs);
+		$res .= "<ul>\r\n";
 		foreach($DynPageErrors as $E)
 			$res .= "<li>{$E}</li>\r\n";
-		$res .= "</ul>\r\n";
+		$res .= "</ul></div>\r\n";
 		echo $res;
 	}
 	
@@ -297,7 +297,7 @@
 		  $Attrs['id'] = $Id;
      
         if ($Value !== null)
-            $Value = htmlentities($Value, ENT_QUOTES);
+            $Value = htmlspecialchars($Value, ENT_QUOTES, "UTF-8");
         else
             $Value = '';
 			
@@ -354,7 +354,7 @@
                 break;
         
             case 'textarea':
-            
+                        
                 $Res .= Html_Element('textarea', $Attrs, $Value);
                 break;
             

@@ -34,8 +34,8 @@
         error_reporting(0);
     }
 
-
 	require_once("requests.php");		
+	require_once("htmlmeta.php");		
 	require_once("htmlbase.php");
 	require_once("htmlfunc.php");
 

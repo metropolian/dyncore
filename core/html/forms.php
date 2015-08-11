@@ -166,6 +166,13 @@
             {   
                 $res .= Html_Element($this->Group, $this->GroupAttrs);
                 
+                if (($A['type'] == 'hidden') || 
+                    ($A['type'] == 'data')) 
+                {                    
+                    return Html_Input_Tag($A['type'], $A['name'], $A['value'], null);                    
+                }
+                
+                
                 $Label = $A['label'];
                 if ($Label != '')
                 {
@@ -173,7 +180,7 @@
                     $Attrs['for'] = $A['name'];
                     $res .= Html_Element('label', $Attrs, $Label);                            
                     $Label = '';
-                }                
+                }
 
                 switch($A['type'])
                 {
@@ -187,19 +194,32 @@
                     if ($this->InputGroup != '')
                         $res .= "</{$this->InputGroup}>";
                     break;
-                case 'radio':
-
+                        
+                case 'radio':                        
+                    $res .= Html_Element($this->InputGroup, array('class' => 'radio'));
+                    
                     if (is_array($A['ops']))
                     foreach($A['ops'] as $K => $V)
-                        $res .= Html_Input_Tag($A['type'], $A['name'], $A['value'], $A['name'], $K, $A['attrs']);
+                    {
+                        $res .= "<label>";
+                        $res .= Html_Input_Tag($A['type'], $A['name'], $A['value'], $A['name'], $K, null);
+                        //$res .= Html_Input_Tag($A['type'], $A['name'], $A['value'], $A['name'], $A['ops'], null);
+                        $res .= " $V </label>\r\n";                    
+                    }
+                    $res .= "</{$this->InputGroup}>";
                     break;
-
-                case 'hidden':
-                    $res .= Html_Input_Tag($A['type'], $A['name'], $A['value'], null);
+                        
+                case 'checkbox':                    
+                    $res .= Html_Element($this->InputGroup, array('class' => 'checkbox'));                        
+                    $res .= "<label>";
+                    $res .= Html_Input_Tag($A['type'], $A['name'], $A['value'], $A['name'], $A['ops'], null);
+                    $res .= "<div>{$A['attrs']['text']}</div>";
+                    $res .= "</label>";                    
+                    $res .= "</{$this->InputGroup}>";
                     break;
-
+                        
+                    
                 default:
-
                     if ($this->InputGroup != '')
                         $res .= Html_Element($this->InputGroup, $this->InputGroupAttrs);
                     
@@ -207,10 +227,8 @@
                     
                     if ($this->InputGroup != '')
                         $res .= "</{$this->InputGroup}>";
-                }
-                
-                $res .= "</{$this->Group}>\r\n";
-                
+                }                
+                $res .= "</{$this->Group}>\r\n";                
             }            
             return $res;
         }

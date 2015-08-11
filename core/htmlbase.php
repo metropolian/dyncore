@@ -119,7 +119,17 @@
 
 	function Html_Render($ScopeName)
 	{	global $DynTemplate, $Request, $User, $CurrentUser, $Cache, $Filters;
-	 
+     
+        if (is_array($ScopeName))
+        {
+            foreach ($ScopeName as $SN) 
+            {
+                Html_Render($SN);
+            }
+            return;
+        }
+     
+     
         LogWrite('core', 'html_render ' . $ScopeName);
 	 	if ( isset( $DynTemplate['scope'][$ScopeName] ) )
 		{
